@@ -32,11 +32,13 @@ A structured design specification covering:
 
 ## Document Conventions
 
-- All files are `.md`, `.json`, or `.yaml` — no compiled code for now
-- `spec/` — numbered specification sections (`01-paradigm-analysis.md`, `02-new-paradigm-design.md`, etc.)
+- Specification and manual files are `.md`, `.json`, or `.yaml`
+- `spec/` — numbered specification sections (`01-paradigm-analysis.md` … `08-canonical-projection.md`)
 - `research/` — raw notes, reference analysis, source material
 - `architecture/` — text-based diagrams and architecture sketches
-- `examples/` — concrete before/after comparisons
+- `examples/` — concrete before/after comparisons; `examples/blog-graph/graph.json` is the machine-readable reference graph
+- `prototype/` — Phase-1 working code: Python, stdlib-only, no external dependencies. Tests run with `python -m unittest discover tests` from `prototype/`. Measurement pilot reproduces with `python run_measurement.py`
+- Measured numbers and projections must never be presented interchangeably — label which is which (see spec/05 §5.2)
 
 ## Terminology
 

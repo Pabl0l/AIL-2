@@ -27,7 +27,7 @@ Software es un grafo semántico tipado. Los nodos son unidades de significado. L
 
 ---
 
-## Los 10 tipos de edge
+## Los 11 tipos de edge
 
 | Edge | Significa |
 |---|---|
@@ -41,6 +41,7 @@ Software es un grafo semántico tipado. Los nodos son unidades de significado. L
 | `boundary-exposes` A→B | A expone B externamente |
 | `derives-from` A→B | A es versión modificada de B |
 | `belongs-to` A→B | A pertenece al dominio/partición B |
+| `compensates` A→B | A es la computación compensatoria de B (sagas, spec/07) |
 
 ---
 
@@ -87,6 +88,12 @@ Software es un grafo semántico tipado. Los nodos son unidades de significado. L
 - Cobertura mínima para deployment: 80%
 - Tipos = compatibilidad de edges, no comparación de texto
 - Errores = nodos event con edges produces/consumes
+
+### Runtime (spec/07)
+- Efectos ordenados (`seq`); emisión de eventos siempre última dentro de un scope transaccional
+- Scopes atómicos nunca cruzan particiones; workflows cross-partición son sagas con edges `compensates`
+- Entrega `at-least-once` exige consumidor idempotente — verificado estructuralmente
+- Política de retry y dead-letter viven en el edge `consumes`, no en código
 
 ### Tiempo
 - Unidad de versión = snapshot

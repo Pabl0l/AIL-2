@@ -1,0 +1,1047 @@
+{
+  "$schema_note": "AIL-2 semantic graph, pedagogical form. IDs here are human-readable aliases; in a real store every node has a content-addressed semantic_id + version_hash (spec/02 §2.3) and these strings live in alias metadata.",
+  "system": "blog",
+  "source": "manual/parte-4-ejemplo.md",
+  "nodes": [
+    {
+      "id": "on:articulo",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Pieza de contenido autoral con título, cuerpo y estado"
+    },
+    {
+      "id": "on:autor",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Persona con identidad verificada que produce artículos"
+    },
+    {
+      "id": "on:comentario",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Respuesta de lector a un artículo publicado"
+    },
+    {
+      "id": "on:categoria",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Agrupación temática de artículos"
+    },
+    {
+      "id": "on:borrador",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Estado de artículo en preparación, no visible públicamente"
+    },
+    {
+      "id": "on:publicado",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Estado de artículo visible para lectores"
+    },
+    {
+      "id": "on:moderacion",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Proceso de revisión de contenido antes de publicación"
+    },
+    {
+      "id": "on:slug",
+      "type": "ontology",
+      "domain": "on:blog",
+      "definition": "Identificador URL único derivado del título"
+    },
+    {
+      "id": "cn:solo-autor-edita",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "Solo el autor de un artículo puede editarlo o publicarlo",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": "sn:verificar-autoria"
+    },
+    {
+      "id": "cn:articulo-publicado-para-comentar",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "Solo se pueden agregar comentarios a artículos con estado publicado",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": "sn:verificar-estado-publicado"
+    },
+    {
+      "id": "cn:comentario-requiere-moderacion",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "Un comentario solo es visible después de ser aprobado por moderación",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": "sn:verificar-estado-moderacion"
+    },
+    {
+      "id": "cn:slug-unico",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "Cada artículo tiene un slug único en el sistema",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": "sn:verificar-unicidad-slug"
+    },
+    {
+      "id": "cn:titulo-valido",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "El título de un artículo tiene entre 5 y 200 caracteres",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": "sn:verificar-longitud-titulo",
+      "params": {
+        "min": 5,
+        "max": 200
+      }
+    },
+    {
+      "id": "cn:moderador-autorizado",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "Solo usuarios con rol moderador o admin pueden aprobar/rechazar comentarios",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": "sn:verificar-rol-moderador"
+    },
+    {
+      "id": "cn:requires-auth",
+      "type": "constraint",
+      "domain": "on:blog",
+      "statement": "La operación requiere un usuario autenticado",
+      "severity": "error",
+      "verifiable": true,
+      "verification_node": null
+    },
+    {
+      "id": "dn:articulo",
+      "type": "data",
+      "domain": "on:blog",
+      "fields": {
+        "id": "uuid",
+        "titulo": "text(5..200)",
+        "contenido": "text",
+        "slug": "on:slug",
+        "estado": "enum(borrador|publicado)",
+        "autor_id": "ref:dn:autor",
+        "categoria_id": "ref:dn:categoria",
+        "creado_en": "timestamp",
+        "actualizado_en": "timestamp"
+      }
+    },
+    {
+      "id": "dn:autor",
+      "type": "data",
+      "domain": "on:blog",
+      "fields": {
+        "id": "uuid",
+        "nombre": "text",
+        "email": "email",
+        "user_id": "uuid",
+        "bio": "text"
+      }
+    },
+    {
+      "id": "dn:comentario",
+      "type": "data",
+      "domain": "on:blog",
+      "fields": {
+        "id": "uuid",
+        "contenido": "text(1..2000)",
+        "autor_id": "ref:dn:autor",
+        "articulo_id": "ref:dn:articulo",
+        "estado": "enum(pendiente|aprobado|rechazado)",
+        "creado_en": "timestamp"
+      }
+    },
+    {
+      "id": "dn:categoria",
+      "type": "data",
+      "domain": "on:blog",
+      "fields": {
+        "id": "uuid",
+        "nombre": "text",
+        "slug": "on:slug",
+        "descripcion": "text"
+      }
+    },
+    {
+      "id": "sn:crear-articulo",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": [
+          "titulo",
+          "contenido",
+          "autor_id",
+          "categoria_id",
+          "requester_id"
+        ],
+        "outputs": ["dn:articulo"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:autor"
+          },
+          {
+            "seq": 2,
+            "kind": "db:write",
+            "target": "dn:articulo"
+          },
+          {
+            "seq": 3,
+            "kind": "event:emit",
+            "target": "ev:articulo-creado"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "atomic",
+        "idempotent": false
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:publicar-articulo",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["articulo_id", "requester_id"],
+        "outputs": ["dn:articulo"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:articulo"
+          },
+          {
+            "seq": 2,
+            "kind": "db:write",
+            "target": "dn:articulo"
+          },
+          {
+            "seq": 3,
+            "kind": "event:emit",
+            "target": "ev:articulo-publicado"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "atomic",
+        "idempotent": true,
+        "idempotency_key": "articulo_id"
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:editar-articulo",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["articulo_id", "campos_a_editar", "requester_id"],
+        "outputs": ["dn:articulo"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:articulo"
+          },
+          {
+            "seq": 2,
+            "kind": "db:write",
+            "target": "dn:articulo"
+          },
+          {
+            "seq": 3,
+            "kind": "event:emit",
+            "target": "ev:articulo-editado"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "atomic",
+        "idempotent": false
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:agregar-comentario",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["contenido", "autor_id", "articulo_id"],
+        "outputs": ["dn:comentario"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:articulo"
+          },
+          {
+            "seq": 2,
+            "kind": "db:write",
+            "target": "dn:comentario"
+          },
+          {
+            "seq": 3,
+            "kind": "event:emit",
+            "target": "ev:comentario-creado"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "atomic",
+        "idempotent": false
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:moderar-comentario",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["comentario_id", "decision", "moderador_id"],
+        "outputs": ["dn:comentario"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:comentario"
+          },
+          {
+            "seq": 2,
+            "kind": "db:write",
+            "target": "dn:comentario"
+          },
+          {
+            "seq": 3,
+            "kind": "event:emit",
+            "target": "ev:comentario-aprobado"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "atomic",
+        "idempotent": true,
+        "idempotency_key": "comentario_id"
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:obtener-articulos-por-categoria",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["categoria_id", "pagina", "limite"],
+        "outputs": ["list<dn:articulo>"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:articulo"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:generar-slug",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["titulo"],
+        "outputs": ["on:slug"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:articulo"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:verificar-autoria",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["requester_id", "dn:articulo"],
+        "outputs": ["bool"],
+        "effects": []
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": true
+    },
+    {
+      "id": "sn:verificar-rol-moderador",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["user_id"],
+        "outputs": ["bool"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:autor"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:verificar-estado-publicado",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["dn:articulo"],
+        "outputs": ["bool"],
+        "effects": []
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": true
+    },
+    {
+      "id": "sn:verificar-estado-moderacion",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["dn:comentario"],
+        "outputs": ["bool"],
+        "effects": []
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": true
+    },
+    {
+      "id": "sn:verificar-unicidad-slug",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["on:slug"],
+        "outputs": ["bool"],
+        "effects": [
+          {
+            "seq": 1,
+            "kind": "db:read",
+            "target": "dn:articulo"
+          }
+        ]
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": false
+    },
+    {
+      "id": "sn:verificar-longitud-titulo",
+      "type": "computation",
+      "domain": "on:blog",
+      "signature": {
+        "inputs": ["titulo"],
+        "outputs": ["bool"],
+        "effects": []
+      },
+      "execution": {
+        "atomicity": "none",
+        "idempotent": true
+      },
+      "deterministic": true
+    },
+    {
+      "id": "ev:articulo-creado",
+      "type": "event",
+      "domain": "on:blog",
+      "payload": {
+        "articulo": "dn:articulo"
+      }
+    },
+    {
+      "id": "ev:articulo-publicado",
+      "type": "event",
+      "domain": "on:blog",
+      "payload": {
+        "articulo": "dn:articulo"
+      }
+    },
+    {
+      "id": "ev:articulo-editado",
+      "type": "event",
+      "domain": "on:blog",
+      "payload": {
+        "articulo": "dn:articulo"
+      }
+    },
+    {
+      "id": "ev:comentario-creado",
+      "type": "event",
+      "domain": "on:blog",
+      "payload": {
+        "comentario": "dn:comentario"
+      }
+    },
+    {
+      "id": "ev:comentario-aprobado",
+      "type": "event",
+      "domain": "on:blog",
+      "payload": {
+        "comentario": "dn:comentario"
+      }
+    },
+    {
+      "id": "ev:comentario-rechazado",
+      "type": "event",
+      "domain": "on:blog",
+      "payload": {
+        "comentario": "dn:comentario"
+      }
+    },
+    {
+      "id": "ev:error-autoria",
+      "type": "event",
+      "event_subtype": "error",
+      "domain": "on:blog",
+      "payload": {
+        "requester_id": "uuid",
+        "articulo_id": "uuid"
+      }
+    },
+    {
+      "id": "ev:error-slug-duplicado",
+      "type": "event",
+      "event_subtype": "error",
+      "domain": "on:blog",
+      "payload": {
+        "slug": "on:slug"
+      }
+    },
+    {
+      "id": "ev:error-titulo-invalido",
+      "type": "event",
+      "event_subtype": "error",
+      "domain": "on:blog",
+      "payload": {
+        "titulo": "text"
+      }
+    },
+    {
+      "id": "ev:error-articulo-no-publicado",
+      "type": "event",
+      "event_subtype": "error",
+      "domain": "on:blog",
+      "payload": {
+        "articulo_id": "uuid"
+      }
+    },
+    {
+      "id": "ev:error-no-autorizado",
+      "type": "event",
+      "event_subtype": "error",
+      "domain": "on:blog",
+      "payload": {
+        "user_id": "uuid"
+      }
+    },
+    {
+      "id": "tn:crear-feliz",
+      "type": "test",
+      "given": {
+        "titulo": "Mi primer artículo",
+        "contenido": "...",
+        "autor_id": "a1",
+        "categoria_id": "c1",
+        "requester_id": "a1"
+      },
+      "expects": {
+        "event": "ev:articulo-creado",
+        "estado": "borrador"
+      }
+    },
+    {
+      "id": "tn:crear-requester-no-autor",
+      "type": "test",
+      "given": {
+        "titulo": "Artículo válido",
+        "autor_id": "a1",
+        "requester_id": "a2"
+      },
+      "expects": {
+        "event": "ev:error-autoria"
+      }
+    },
+    {
+      "id": "tn:crear-titulo-corto",
+      "type": "test",
+      "given": {
+        "titulo": "Hi",
+        "contenido": "...",
+        "autor_id": "a1",
+        "requester_id": "a1"
+      },
+      "expects": {
+        "event": "ev:error-titulo-invalido"
+      }
+    },
+    {
+      "id": "tn:crear-slug-duplicado",
+      "type": "test",
+      "given": {
+        "titulo": "Título ya usado",
+        "autor_id": "a1",
+        "requester_id": "a1",
+        "state": "fixture:articulo-con-mismo-slug"
+      },
+      "expects": {
+        "event": "ev:error-slug-duplicado"
+      }
+    },
+    {
+      "id": "tn:publicar-feliz",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-borrador",
+        "requester_id": "autor-de-art"
+      },
+      "expects": {
+        "event": "ev:articulo-publicado",
+        "estado": "publicado"
+      }
+    },
+    {
+      "id": "tn:publicar-no-autor",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-borrador",
+        "requester_id": "otro-usuario"
+      },
+      "expects": {
+        "event": "ev:error-autoria"
+      }
+    },
+    {
+      "id": "tn:editar-feliz",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-1",
+        "campos_a_editar": {
+          "titulo": "Título nuevo válido"
+        },
+        "requester_id": "autor-de-art"
+      },
+      "expects": {
+        "event": "ev:articulo-editado"
+      }
+    },
+    {
+      "id": "tn:editar-no-autor",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-1",
+        "campos_a_editar": {
+          "titulo": "X Y Z válido"
+        },
+        "requester_id": "otro-usuario"
+      },
+      "expects": {
+        "event": "ev:error-autoria"
+      }
+    },
+    {
+      "id": "tn:editar-titulo-invalido",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-1",
+        "campos_a_editar": {
+          "titulo": "abc"
+        },
+        "requester_id": "autor-de-art"
+      },
+      "expects": {
+        "event": "ev:error-titulo-invalido"
+      }
+    },
+    {
+      "id": "tn:comentar-feliz",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-publicado",
+        "autor_id": "lector-1",
+        "contenido": "Buen artículo"
+      },
+      "expects": {
+        "event": "ev:comentario-creado",
+        "estado": "pendiente"
+      }
+    },
+    {
+      "id": "tn:comentar-en-borrador",
+      "type": "test",
+      "given": {
+        "articulo_id": "art-borrador",
+        "autor_id": "lector-1",
+        "contenido": "..."
+      },
+      "expects": {
+        "event": "ev:error-articulo-no-publicado"
+      }
+    },
+    {
+      "id": "tn:comentar-articulo-inexistente",
+      "type": "test",
+      "given": {
+        "articulo_id": "no-existe",
+        "autor_id": "lector-1",
+        "contenido": "..."
+      },
+      "expects": {
+        "event": "ev:error-articulo-no-publicado"
+      }
+    },
+    {
+      "id": "tn:moderar-aprobar",
+      "type": "test",
+      "given": {
+        "comentario_id": "c-pendiente",
+        "decision": "aprobado",
+        "moderador_id": "mod-1"
+      },
+      "expects": {
+        "event": "ev:comentario-aprobado",
+        "estado": "aprobado"
+      }
+    },
+    {
+      "id": "tn:moderar-rechazar",
+      "type": "test",
+      "given": {
+        "comentario_id": "c-pendiente",
+        "decision": "rechazado",
+        "moderador_id": "mod-1"
+      },
+      "expects": {
+        "event": "ev:comentario-rechazado",
+        "estado": "rechazado"
+      }
+    },
+    {
+      "id": "tn:moderar-sin-permiso",
+      "type": "test",
+      "given": {
+        "comentario_id": "c-pendiente",
+        "decision": "aprobado",
+        "moderador_id": "lector-sin-rol"
+      },
+      "expects": {
+        "event": "ev:error-no-autorizado"
+      }
+    },
+    {
+      "id": "tn:listar-por-categoria",
+      "type": "test",
+      "given": {
+        "categoria_id": "c1",
+        "pagina": 1,
+        "limite": 10,
+        "state": "fixture:3-articulos-publicados-c1"
+      },
+      "expects": {
+        "count": 3
+      }
+    },
+    {
+      "id": "tn:listar-paginacion",
+      "type": "test",
+      "given": {
+        "categoria_id": "c1",
+        "pagina": 2,
+        "limite": 2,
+        "state": "fixture:3-articulos-publicados-c1"
+      },
+      "expects": {
+        "count": 1
+      }
+    },
+    {
+      "id": "tn:slug-basico",
+      "type": "test",
+      "given": {
+        "titulo": "Mi Primer Artículo"
+      },
+      "expects": {
+        "output": "mi-primer-articulo"
+      }
+    },
+    {
+      "id": "tn:slug-colision",
+      "type": "test",
+      "given": {
+        "titulo": "Título Repetido",
+        "state": "fixture:slug-titulo-repetido-existe"
+      },
+      "expects": {
+        "output": "titulo-repetido-2"
+      }
+    },
+    {
+      "id": "tn:autoria-correcta",
+      "type": "test",
+      "given": {
+        "requester_id": "a1",
+        "articulo": {
+          "autor_id": "a1"
+        }
+      },
+      "expects": {
+        "output": true
+      }
+    },
+    {
+      "id": "tn:rol-moderador-valido",
+      "type": "test",
+      "given": {
+        "user_id": "mod-1",
+        "state": "fixture:mod-1-tiene-rol-moderador"
+      },
+      "expects": {
+        "output": true
+      }
+    },
+    {
+      "id": "tn:estado-publicado-true",
+      "type": "test",
+      "given": {
+        "articulo": {
+          "estado": "publicado"
+        }
+      },
+      "expects": {
+        "output": true
+      }
+    },
+    {
+      "id": "tn:estado-moderacion-pendiente-invisible",
+      "type": "test",
+      "given": {
+        "comentario": {
+          "estado": "pendiente"
+        }
+      },
+      "expects": {
+        "output": false
+      }
+    },
+    {
+      "id": "tn:unicidad-slug-libre",
+      "type": "test",
+      "given": {
+        "slug": "slug-nunca-usado"
+      },
+      "expects": {
+        "output": true
+      }
+    },
+    {
+      "id": "tn:longitud-titulo-limite-inferior",
+      "type": "test",
+      "given": {
+        "titulo": "abcde"
+      },
+      "expects": {
+        "output": true
+      }
+    },
+    {
+      "id": "bn:POST-articulos",
+      "type": "boundary",
+      "direction": "inbound",
+      "protocol": "http-rest",
+      "external_name": "POST /articles",
+      "timeout_ms": 5000
+    },
+    {
+      "id": "bn:PATCH-articulo-publicar",
+      "type": "boundary",
+      "direction": "inbound",
+      "protocol": "http-rest",
+      "external_name": "PATCH /articles/{id}/publish",
+      "timeout_ms": 5000
+    },
+    {
+      "id": "bn:PATCH-articulo-editar",
+      "type": "boundary",
+      "direction": "inbound",
+      "protocol": "http-rest",
+      "external_name": "PATCH /articles/{id}",
+      "timeout_ms": 5000
+    },
+    {
+      "id": "bn:POST-comentario",
+      "type": "boundary",
+      "direction": "inbound",
+      "protocol": "http-rest",
+      "external_name": "POST /articles/{id}/comments",
+      "timeout_ms": 5000
+    },
+    {
+      "id": "bn:PATCH-comentario-moderar",
+      "type": "boundary",
+      "direction": "inbound",
+      "protocol": "http-rest",
+      "external_name": "PATCH /comments/{id}/moderate",
+      "timeout_ms": 5000
+    },
+    {
+      "id": "bn:GET-articulos-categoria",
+      "type": "boundary",
+      "direction": "inbound",
+      "protocol": "http-rest",
+      "external_name": "GET /categories/{id}/articles",
+      "timeout_ms": 5000
+    }
+  ],
+  "edges": [
+    ["dn:articulo", "constrained-by", "cn:titulo-valido"],
+    ["dn:articulo", "constrained-by", "cn:slug-unico"],
+    ["dn:articulo", "composed-of", "dn:autor"],
+    ["dn:articulo", "composed-of", "dn:categoria"],
+    ["dn:comentario", "composed-of", "dn:articulo"],
+    ["dn:comentario", "composed-of", "dn:autor"],
+    ["dn:comentario", "constrained-by", "cn:comentario-requiere-moderacion"],
+    ["sn:crear-articulo", "depends-on", "dn:articulo"],
+    ["sn:crear-articulo", "depends-on", "dn:autor"],
+    ["sn:crear-articulo", "depends-on", "sn:generar-slug"],
+    ["sn:crear-articulo", "depends-on", "sn:verificar-autoria"],
+    ["sn:crear-articulo", "constrained-by", "cn:solo-autor-edita"],
+    ["sn:crear-articulo", "constrained-by", "cn:titulo-valido"],
+    ["sn:crear-articulo", "constrained-by", "cn:slug-unico"],
+    ["sn:crear-articulo", "produces", "ev:articulo-creado"],
+    ["sn:crear-articulo", "produces", "ev:error-autoria"],
+    ["sn:crear-articulo", "produces", "ev:error-slug-duplicado"],
+    ["sn:crear-articulo", "produces", "ev:error-titulo-invalido"],
+    ["sn:publicar-articulo", "depends-on", "dn:articulo"],
+    ["sn:publicar-articulo", "depends-on", "sn:verificar-autoria"],
+    ["sn:publicar-articulo", "constrained-by", "cn:solo-autor-edita"],
+    ["sn:publicar-articulo", "produces", "ev:articulo-publicado"],
+    ["sn:publicar-articulo", "produces", "ev:error-autoria"],
+    ["sn:editar-articulo", "depends-on", "dn:articulo"],
+    ["sn:editar-articulo", "depends-on", "sn:verificar-autoria"],
+    ["sn:editar-articulo", "depends-on", "sn:generar-slug"],
+    ["sn:editar-articulo", "constrained-by", "cn:solo-autor-edita"],
+    ["sn:editar-articulo", "constrained-by", "cn:titulo-valido"],
+    ["sn:editar-articulo", "constrained-by", "cn:slug-unico"],
+    ["sn:editar-articulo", "produces", "ev:articulo-editado"],
+    ["sn:editar-articulo", "produces", "ev:error-autoria"],
+    ["sn:editar-articulo", "produces", "ev:error-titulo-invalido"],
+    ["sn:agregar-comentario", "depends-on", "dn:comentario"],
+    ["sn:agregar-comentario", "depends-on", "dn:articulo"],
+    ["sn:agregar-comentario", "depends-on", "sn:verificar-estado-publicado"],
+    [
+      "sn:agregar-comentario",
+      "constrained-by",
+      "cn:articulo-publicado-para-comentar"
+    ],
+    ["sn:agregar-comentario", "produces", "ev:comentario-creado"],
+    ["sn:agregar-comentario", "produces", "ev:error-articulo-no-publicado"],
+    ["sn:moderar-comentario", "depends-on", "dn:comentario"],
+    ["sn:moderar-comentario", "depends-on", "sn:verificar-rol-moderador"],
+    ["sn:moderar-comentario", "constrained-by", "cn:moderador-autorizado"],
+    ["sn:moderar-comentario", "produces", "ev:comentario-aprobado"],
+    ["sn:moderar-comentario", "produces", "ev:comentario-rechazado"],
+    ["sn:moderar-comentario", "produces", "ev:error-no-autorizado"],
+    ["sn:obtener-articulos-por-categoria", "depends-on", "dn:articulo"],
+    ["sn:obtener-articulos-por-categoria", "depends-on", "dn:categoria"],
+    ["sn:generar-slug", "depends-on", "dn:articulo"],
+    ["sn:verificar-autoria", "depends-on", "dn:articulo"],
+    ["sn:verificar-rol-moderador", "depends-on", "dn:autor"],
+    ["sn:verificar-estado-publicado", "depends-on", "dn:articulo"],
+    ["sn:verificar-estado-moderacion", "depends-on", "dn:comentario"],
+    ["sn:verificar-unicidad-slug", "depends-on", "dn:articulo"],
+    ["sn:verificar-longitud-titulo", "depends-on", "dn:articulo"],
+    ["tn:crear-feliz", "tests", "sn:crear-articulo"],
+    ["tn:crear-requester-no-autor", "tests", "sn:crear-articulo"],
+    ["tn:crear-titulo-corto", "tests", "sn:crear-articulo"],
+    ["tn:crear-slug-duplicado", "tests", "sn:crear-articulo"],
+    ["tn:publicar-feliz", "tests", "sn:publicar-articulo"],
+    ["tn:publicar-no-autor", "tests", "sn:publicar-articulo"],
+    ["tn:editar-feliz", "tests", "sn:editar-articulo"],
+    ["tn:editar-no-autor", "tests", "sn:editar-articulo"],
+    ["tn:editar-titulo-invalido", "tests", "sn:editar-articulo"],
+    ["tn:comentar-feliz", "tests", "sn:agregar-comentario"],
+    ["tn:comentar-en-borrador", "tests", "sn:agregar-comentario"],
+    ["tn:comentar-articulo-inexistente", "tests", "sn:agregar-comentario"],
+    ["tn:moderar-aprobar", "tests", "sn:moderar-comentario"],
+    ["tn:moderar-rechazar", "tests", "sn:moderar-comentario"],
+    ["tn:moderar-sin-permiso", "tests", "sn:moderar-comentario"],
+    ["tn:listar-por-categoria", "tests", "sn:obtener-articulos-por-categoria"],
+    ["tn:listar-paginacion", "tests", "sn:obtener-articulos-por-categoria"],
+    ["tn:slug-basico", "tests", "sn:generar-slug"],
+    ["tn:slug-colision", "tests", "sn:generar-slug"],
+    ["tn:autoria-correcta", "tests", "sn:verificar-autoria"],
+    ["tn:rol-moderador-valido", "tests", "sn:verificar-rol-moderador"],
+    ["bn:POST-articulos", "boundary-exposes", "sn:crear-articulo"],
+    ["bn:PATCH-articulo-publicar", "boundary-exposes", "sn:publicar-articulo"],
+    ["bn:PATCH-articulo-editar", "boundary-exposes", "sn:editar-articulo"],
+    ["bn:POST-comentario", "boundary-exposes", "sn:agregar-comentario"],
+    [
+      "bn:PATCH-comentario-moderar",
+      "boundary-exposes",
+      "sn:moderar-comentario"
+    ],
+    [
+      "bn:GET-articulos-categoria",
+      "boundary-exposes",
+      "sn:obtener-articulos-por-categoria"
+    ],
+    ["bn:POST-articulos", "constrained-by", "cn:requires-auth"],
+    ["bn:PATCH-articulo-publicar", "constrained-by", "cn:requires-auth"],
+    ["bn:PATCH-articulo-editar", "constrained-by", "cn:requires-auth"],
+    ["bn:POST-comentario", "constrained-by", "cn:requires-auth"],
+    ["bn:PATCH-comentario-moderar", "constrained-by", "cn:requires-auth"],
+    [
+      "bn:PATCH-comentario-moderar",
+      "constrained-by",
+      "cn:moderador-autorizado"
+    ],
+    ["tn:estado-publicado-true", "tests", "sn:verificar-estado-publicado"],
+    [
+      "tn:estado-moderacion-pendiente-invisible",
+      "tests",
+      "sn:verificar-estado-moderacion"
+    ],
+    ["tn:unicidad-slug-libre", "tests", "sn:verificar-unicidad-slug"],
+    [
+      "tn:longitud-titulo-limite-inferior",
+      "tests",
+      "sn:verificar-longitud-titulo"
+    ]
+  ]
+}

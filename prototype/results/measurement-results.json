@@ -1,0 +1,1483 @@
+{
+  "experiment": "AIL-2 Phase 1 pilot: input tokens, depth-2 edit context vs whole-file",
+  "date": "2026-07-01",
+  "python": "3.11.15",
+  "corpus": [
+    "argparse",
+    "configparser",
+    "json.decoder",
+    "json.encoder",
+    "json.scanner",
+    "http.client",
+    "urllib.parse",
+    "email.message"
+  ],
+  "corpus_stats": {
+    "total_source_tokens": 66500,
+    "graph_nodes": 578,
+    "graph_edges": 570,
+    "call_resolution": {
+      "calls_total": 2084,
+      "calls_resolved": 597,
+      "resolution_rate": 0.286
+    }
+  },
+  "caveats": [
+    "Token counts use a word/punct regex proxy, not a BPE tokenizer; only ratios are meaningful.",
+    "Call resolution is name-based; unresolved calls mean some depends-on edges are missing, which UNDERSTATES the ail context size. See resolution_rate.",
+    "No constraint/ontology nodes exist in extracted Python -- the ail context is signatures+events+tests only. Real AIL contexts would be somewhat larger.",
+    "This is a pilot on stdlib modules, not the >=50-task multi-codebase validation demanded by spec/05 \u00a75.2."
+  ],
+  "results": {
+    "n_edit_targets": 238,
+    "ail_vs_whole_file": {
+      "mean_ratio": 0.0501,
+      "median_ratio": 0.0284,
+      "p90_ratio": 0.079,
+      "mean_reduction_factor": 20.0,
+      "median_reduction_factor": 35.2
+    },
+    "ail_vs_file_plus_imports": {
+      "mean_ratio": 0.0456,
+      "median_ratio": 0.0222,
+      "p90_ratio": 0.0766,
+      "mean_reduction_factor": 21.9,
+      "median_reduction_factor": 45.1
+    },
+    "ail_tokens": {
+      "mean": 419,
+      "median": 337.0,
+      "max": 2427
+    },
+    "per_node": [
+      {
+        "node": "sn:argparse.ArgumentError.__init__",
+        "ail_tokens": 152,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._get_option_tuples",
+        "ail_tokens": 508,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._get_values",
+        "ail_tokens": 641,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._match_argument",
+        "ail_tokens": 326,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._match_arguments_partial",
+        "ail_tokens": 256,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._parse_known_args",
+        "ail_tokens": 2427,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._parse_known_args.consume_optional",
+        "ail_tokens": 810,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._parse_known_args.consume_positionals",
+        "ail_tokens": 311,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._parse_known_args.take_action",
+        "ail_tokens": 467,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._parse_optional",
+        "ail_tokens": 673,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._print_message",
+        "ail_tokens": 392,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser._read_args_from_files",
+        "ail_tokens": 436,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.add_subparsers",
+        "ail_tokens": 545,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.error",
+        "ail_tokens": 705,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.exit",
+        "ail_tokens": 345,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.format_help",
+        "ail_tokens": 538,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.format_usage",
+        "ail_tokens": 323,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.parse_args",
+        "ail_tokens": 246,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.parse_intermixed_args",
+        "ail_tokens": 246,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.parse_known_args",
+        "ail_tokens": 607,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.parse_known_intermixed_args",
+        "ail_tokens": 868,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.print_help",
+        "ail_tokens": 274,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.ArgumentParser.print_usage",
+        "ail_tokens": 262,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.BooleanOptionalAction.__init__",
+        "ail_tokens": 285,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._Section.format_help",
+        "ail_tokens": 367,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._add_item",
+        "ail_tokens": 374,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._expand_help",
+        "ail_tokens": 310,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_action",
+        "ail_tokens": 781,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_action_invocation",
+        "ail_tokens": 546,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_actions_usage",
+        "ail_tokens": 1101,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_args",
+        "ail_tokens": 557,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_text",
+        "ail_tokens": 209,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_usage",
+        "ail_tokens": 969,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._format_usage.get_lines",
+        "ail_tokens": 347,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter._iter_indented_subactions",
+        "ail_tokens": 308,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter.add_argument",
+        "ail_tokens": 395,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter.add_arguments",
+        "ail_tokens": 195,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter.add_text",
+        "ail_tokens": 273,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter.add_usage",
+        "ail_tokens": 325,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter.end_section",
+        "ail_tokens": 188,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse.HelpFormatter.start_section",
+        "ail_tokens": 269,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer.__init__",
+        "ail_tokens": 547,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer._add_action",
+        "ail_tokens": 341,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer._add_container_actions",
+        "ail_tokens": 474,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer._check_conflict",
+        "ail_tokens": 303,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer._get_optional_kwargs",
+        "ail_tokens": 481,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer._pop_action_class",
+        "ail_tokens": 225,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer.add_argument",
+        "ail_tokens": 848,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer.add_argument_group",
+        "ail_tokens": 216,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ActionsContainer.add_mutually_exclusive_group",
+        "ail_tokens": 210,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._AppendAction.__call__",
+        "ail_tokens": 241,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._AppendConstAction.__call__",
+        "ail_tokens": 243,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ArgumentGroup._add_action",
+        "ail_tokens": 166,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._AttributeHolder.__repr__",
+        "ail_tokens": 348,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._ExtendAction.__call__",
+        "ail_tokens": 187,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._HelpAction.__call__",
+        "ail_tokens": 223,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._MutuallyExclusiveGroup._add_action",
+        "ail_tokens": 213,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._SubParsersAction.__call__",
+        "ail_tokens": 423,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._SubParsersAction.add_parser",
+        "ail_tokens": 381,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:argparse._VersionAction.__call__",
+        "ail_tokens": 360,
+        "file_tokens": 18226,
+        "closure_tokens": 18226
+      },
+      {
+        "node": "sn:configparser.BasicInterpolation._interpolate_some",
+        "ail_tokens": 657,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.BasicInterpolation.before_get",
+        "ail_tokens": 217,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.ConverterMapping.__delitem__",
+        "ail_tokens": 244,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.ConverterMapping.__setitem__",
+        "ail_tokens": 355,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.DuplicateOptionError.__init__",
+        "ail_tokens": 359,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.DuplicateSectionError.__init__",
+        "ail_tokens": 336,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.ExtendedInterpolation._interpolate_some",
+        "ail_tokens": 833,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.ExtendedInterpolation.before_get",
+        "ail_tokens": 217,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.InterpolationDepthError.__init__",
+        "ail_tokens": 233,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.InterpolationMissingOptionError.__init__",
+        "ail_tokens": 244,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.LegacyInterpolation._interpolation_replace",
+        "ail_tokens": 177,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.__contains__",
+        "ail_tokens": 153,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.__delitem__",
+        "ail_tokens": 284,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.__getitem__",
+        "ail_tokens": 194,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.__init__",
+        "ail_tokens": 617,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.__iter__",
+        "ail_tokens": 162,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.__setitem__",
+        "ail_tokens": 296,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._get",
+        "ail_tokens": 256,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._get_conv",
+        "ail_tokens": 426,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._handle_error",
+        "ail_tokens": 237,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._join_multiline_values",
+        "ail_tokens": 344,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._read",
+        "ail_tokens": 1491,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._read_defaults",
+        "ail_tokens": 333,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._unify_values",
+        "ail_tokens": 415,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser._write_section",
+        "ail_tokens": 451,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.get",
+        "ail_tokens": 532,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.getboolean",
+        "ail_tokens": 224,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.getfloat",
+        "ail_tokens": 222,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.getint",
+        "ail_tokens": 222,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.has_option",
+        "ail_tokens": 405,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.items",
+        "ail_tokens": 845,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.options",
+        "ail_tokens": 268,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.popitem",
+        "ail_tokens": 227,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.read",
+        "ail_tokens": 381,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.read_dict",
+        "ail_tokens": 615,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.read_file",
+        "ail_tokens": 377,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.read_string",
+        "ail_tokens": 184,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.readfp",
+        "ail_tokens": 209,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.remove_option",
+        "ail_tokens": 292,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.sections",
+        "ail_tokens": 216,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.set",
+        "ail_tokens": 311,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.RawConfigParser.write",
+        "ail_tokens": 571,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__contains__",
+        "ail_tokens": 156,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__delitem__",
+        "ail_tokens": 259,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__getitem__",
+        "ail_tokens": 203,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__iter__",
+        "ail_tokens": 139,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__len__",
+        "ail_tokens": 138,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__repr__",
+        "ail_tokens": 147,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy.__setitem__",
+        "ail_tokens": 182,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:configparser.SectionProxy._options",
+        "ail_tokens": 303,
+        "file_tokens": 10547,
+        "closure_tokens": 10547
+      },
+      {
+        "node": "sn:email.message.MIMEPart.__str__",
+        "ail_tokens": 163,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart._find_body",
+        "ail_tokens": 605,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart._make_multipart",
+        "ail_tokens": 585,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.add_alternative",
+        "ail_tokens": 163,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.add_attachment",
+        "ail_tokens": 169,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.add_related",
+        "ail_tokens": 169,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.get_body",
+        "ail_tokens": 306,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.iter_attachments",
+        "ail_tokens": 740,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.make_alternative",
+        "ail_tokens": 170,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.make_mixed",
+        "ail_tokens": 166,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.MIMEPart.make_related",
+        "ail_tokens": 173,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.__bytes__",
+        "ail_tokens": 163,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.__delitem__",
+        "ail_tokens": 217,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.__getitem__",
+        "ail_tokens": 210,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.__setitem__",
+        "ail_tokens": 362,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.__str__",
+        "ail_tokens": 166,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message._get_params_preserve",
+        "ail_tokens": 557,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.add_header",
+        "ail_tokens": 595,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.attach",
+        "ail_tokens": 271,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.del_param",
+        "ail_tokens": 490,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_all",
+        "ail_tokens": 328,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_boundary",
+        "ail_tokens": 245,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_charsets",
+        "ail_tokens": 311,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_content_charset",
+        "ail_tokens": 440,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_content_disposition",
+        "ail_tokens": 262,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_content_maintype",
+        "ail_tokens": 183,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_content_subtype",
+        "ail_tokens": 184,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_content_type",
+        "ail_tokens": 630,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_filename",
+        "ail_tokens": 283,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_param",
+        "ail_tokens": 839,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_params",
+        "ail_tokens": 592,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.get_payload",
+        "ail_tokens": 1206,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.set_boundary",
+        "ail_tokens": 614,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.set_charset",
+        "ail_tokens": 734,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.set_param",
+        "ail_tokens": 903,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.set_payload",
+        "ail_tokens": 278,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.set_raw",
+        "ail_tokens": 195,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message.Message.set_type",
+        "ail_tokens": 537,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message._decode_uu",
+        "ail_tokens": 428,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message._formatparam",
+        "ail_tokens": 670,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message._parseparam",
+        "ail_tokens": 413,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:email.message._unquotevalue",
+        "ail_tokens": 351,
+        "file_tokens": 9664,
+        "closure_tokens": 9664
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.__init__",
+        "ail_tokens": 343,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection._output",
+        "ail_tokens": 302,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection._read_readable",
+        "ail_tokens": 328,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection._send_output",
+        "ail_tokens": 656,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection._send_request",
+        "ail_tokens": 819,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection._tunnel",
+        "ail_tokens": 807,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.connect",
+        "ail_tokens": 303,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.endheaders",
+        "ail_tokens": 327,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.getresponse",
+        "ail_tokens": 654,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.putheader",
+        "ail_tokens": 544,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.putrequest",
+        "ail_tokens": 1637,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.request",
+        "ail_tokens": 220,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.send",
+        "ail_tokens": 690,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPConnection.set_tunnel",
+        "ail_tokens": 390,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPMessage.getallmatchingheaders",
+        "ail_tokens": 304,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._get_chunk_left",
+        "ail_tokens": 699,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._peek_chunked",
+        "ail_tokens": 342,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._read1_chunked",
+        "ail_tokens": 375,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._read_and_discard_trailer",
+        "ail_tokens": 307,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._read_chunked",
+        "ail_tokens": 438,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._read_next_chunk_size",
+        "ail_tokens": 354,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._read_status",
+        "ail_tokens": 576,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._readinto_chunked",
+        "ail_tokens": 379,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._safe_read",
+        "ail_tokens": 594,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse._safe_readinto",
+        "ail_tokens": 277,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.begin",
+        "ail_tokens": 878,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.close",
+        "ail_tokens": 160,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.getheader",
+        "ail_tokens": 309,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.peek",
+        "ail_tokens": 257,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.read",
+        "ail_tokens": 647,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.read1",
+        "ail_tokens": 380,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.readinto",
+        "ail_tokens": 459,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.HTTPResponse.readline",
+        "ail_tokens": 503,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client._read_headers",
+        "ail_tokens": 463,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:http.client.parse_headers",
+        "ail_tokens": 295,
+        "file_tokens": 11291,
+        "closure_tokens": 30997
+      },
+      {
+        "node": "sn:json.decoder.JSONArray",
+        "ail_tokens": 422,
+        "file_tokens": 3026,
+        "closure_tokens": 3567
+      },
+      {
+        "node": "sn:json.decoder.JSONDecoder.decode",
+        "ail_tokens": 272,
+        "file_tokens": 3026,
+        "closure_tokens": 3567
+      },
+      {
+        "node": "sn:json.decoder.JSONObject",
+        "ail_tokens": 767,
+        "file_tokens": 3026,
+        "closure_tokens": 3567
+      },
+      {
+        "node": "sn:json.decoder.py_scanstring",
+        "ail_tokens": 692,
+        "file_tokens": 3026,
+        "closure_tokens": 3567
+      },
+      {
+        "node": "sn:json.encoder.JSONEncoder.encode",
+        "ail_tokens": 336,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder.JSONEncoder.iterencode",
+        "ail_tokens": 644,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder._make_iterencode",
+        "ail_tokens": 1481,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder._make_iterencode._iterencode",
+        "ail_tokens": 682,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder._make_iterencode._iterencode_dict",
+        "ail_tokens": 923,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder._make_iterencode._iterencode_list",
+        "ail_tokens": 756,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder.py_encode_basestring_ascii",
+        "ail_tokens": 288,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.encoder.py_encode_basestring_ascii.replace",
+        "ail_tokens": 250,
+        "file_tokens": 3163,
+        "closure_tokens": 3163
+      },
+      {
+        "node": "sn:json.scanner.py_make_scanner",
+        "ail_tokens": 644,
+        "file_tokens": 541,
+        "closure_tokens": 541
+      },
+      {
+        "node": "sn:json.scanner.py_make_scanner.scan_once",
+        "ail_tokens": 338,
+        "file_tokens": 541,
+        "closure_tokens": 541
+      },
+      {
+        "node": "sn:urllib.parse.ParseResult.geturl",
+        "ail_tokens": 136,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.ParseResultBytes.geturl",
+        "ail_tokens": 136,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.SplitResult.geturl",
+        "ail_tokens": 136,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.SplitResultBytes.geturl",
+        "ail_tokens": 136,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse._Quoter.__missing__",
+        "ail_tokens": 186,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse._check_bracketed_netloc",
+        "ail_tokens": 348,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse._coerce_args",
+        "ail_tokens": 585,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse._decode_args",
+        "ail_tokens": 218,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse._encode_result",
+        "ail_tokens": 164,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse._to_bytes",
+        "ail_tokens": 362,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.parse_qs",
+        "ail_tokens": 511,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.parse_qsl",
+        "ail_tokens": 900,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.parse_qsl._unquote",
+        "ail_tokens": 202,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.quote",
+        "ail_tokens": 864,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.quote_from_bytes",
+        "ail_tokens": 528,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.quote_plus",
+        "ail_tokens": 346,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splitattr",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splithost",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splitnport",
+        "ail_tokens": 188,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splitpasswd",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splitport",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splitquery",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splittag",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splittype",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splituser",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.splitvalue",
+        "ail_tokens": 173,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.to_bytes",
+        "ail_tokens": 161,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.unquote",
+        "ail_tokens": 570,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.unquote_plus",
+        "ail_tokens": 344,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.unquote_to_bytes",
+        "ail_tokens": 600,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urldefrag",
+        "ail_tokens": 334,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urlencode",
+        "ail_tokens": 791,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urljoin",
+        "ail_tokens": 759,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urlparse",
+        "ail_tokens": 571,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urlsplit",
+        "ail_tokens": 904,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urlunparse",
+        "ail_tokens": 481,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      },
+      {
+        "node": "sn:urllib.parse.urlunsplit",
+        "ail_tokens": 465,
+        "file_tokens": 10042,
+        "closure_tokens": 10042
+      }
+    ]
+  }
+}
