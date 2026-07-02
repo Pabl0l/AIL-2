@@ -46,11 +46,14 @@ Software es un grafo semántico tipado. Los nodos son unidades de significado. L
 
 ## Las reglas en una página
 
-### Identidad
-- ID = sha256(tipo + firma + IR_hash + sorted(dep_IDs))
+### Identidad (dos niveles)
+- semantic_id = sha256(tipo + firma canónica) — estable mientras el contrato no cambie
+- version_hash = sha256(semantic_id + IR_hash + pins de dependencias) — nuevo en cada cambio de conducta
+- Los edges referencian semantic_id (pin de versión opcional)
 - Nombres son aliases en metadata, nunca identidad
 - Renombrar = actualizar metadata, sin cambio de ID
-- Cambiar contenido = nuevo nodo con nueva ID
+- Cambiar conducta = nueva versión, mismo semantic_id — dependientes no se tocan
+- Cambiar firma = nuevo semantic_id — breaking change, dependientes deben re-apuntar
 
 ### Representación
 - Cada artefacto mapea a exactamente un tipo de nodo

@@ -1,9 +1,6 @@
 # Local Claude Code settings (personal, not team-shared)
 .claude/settings.local.json
 
-# Test artifacts
-test-resultados.json
-
 # OS
 .DS_Store
 Thumbs.db

@@ -1,0 +1,49 @@
+{
+  "sistema": {
+    "senior_system_tokens": 75,
+    "ail_system_tokens": 2085
+  },
+  "tareas": [
+    {
+      "n": 1,
+      "name": "Regla: stock no negativo",
+      "prompt_tokens": 55,
+      "senior_output": 797,
+      "ail_output": 643
+    },
+    {
+      "n": 2,
+      "name": "Rate limiting escritura",
+      "prompt_tokens": 49,
+      "senior_output": 622,
+      "ail_output": 484
+    },
+    {
+      "n": 3,
+      "name": "Bug: comentar borradores",
+      "prompt_tokens": 38,
+      "senior_output": 591,
+      "ail_output": 471
+    },
+    {
+      "n": 4,
+      "name": "Estado 'archivado'",
+      "prompt_tokens": 53,
+      "senior_output": 653,
+      "ail_output": 835
+    },
+    {
+      "n": 5,
+      "name": "Notificación stock bajo",
+      "prompt_tokens": 68,
+      "senior_output": 889,
+      "ail_output": 692
+    }
+  ],
+  "totales": {
+    "senior_output": 3552,
+    "ail_output": 3125,
+    "delta_output": -427,
+    "pct_output": -12.021396396396396
+  }
+}

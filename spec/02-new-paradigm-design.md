@@ -90,30 +90,63 @@ The graph connecting semantic nodes is a **labeled property graph** — each edg
 
 ---
 
-## 2.3 Identity: Content-Addressed Hashing
+## 2.3 Identity: Two-Level Content Addressing
 
-Every semantic node's ID is derived from its content, not from a human-chosen name.
+Every semantic node's identity is derived from its content, not from a human-chosen name. Identity has two levels, because a single-level scheme breaks edit locality (see "The Cascade Problem" below).
 
-### ID Derivation
+### Level 1 — Semantic ID (stable)
 
 ```
-id = "sn:" + sha256(
+semantic_id = "sn:" + sha256(
   node.type +
-  canonical_serialize(node.signature) +
-  node.behavior.ir_hash +
-  sorted(node.direct_dependency_ids)
+  canonical_serialize(node.signature)
 )
 ```
+
+The semantic ID captures *what the node is*: its type and its typed contract (inputs, outputs, effects). It does **not** include the behavior IR or the dependency set. Changing the implementation of a node does not change its semantic ID. Changing its signature does — which is correct, because a signature change is a breaking change that dependents must react to.
+
+### Level 2 — Version Hash (per revision)
+
+```
+version_hash = "v:" + sha256(
+  semantic_id +
+  node.behavior.ir_hash +
+  sorted(node.dependency_version_pins)
+)
+```
+
+The version hash captures *what the node currently does*: its exact IR and the exact versions of its dependencies. Every behavior change produces a new version hash under the same semantic ID.
+
+### Edge Referencing Rule
+
+Edges reference **semantic IDs**, optionally pinned to a version hash:
+
+- Unpinned edge (`A depends-on sn:B`): A always uses the latest valid version of B. B's implementation can change without touching A.
+- Pinned edge (`A depends-on sn:B @ v:3a9f`): A requires that exact revision. Used for reproducible snapshots and compatibility freezes.
+
+Compiled snapshots resolve all unpinned edges to concrete version hashes at snapshot time, so builds are always reproducible even when edges are unpinned.
+
+### The Cascade Problem (why identity is two-level)
+
+A naive single-level scheme — `id = sha256(type + signature + ir_hash + dep_ids)` — turns the graph into a Merkle tree: editing one leaf node changes its ID, which changes the ID of every direct dependent, which cascades to every transitive dependent. A one-node behavior fix would re-identify half the graph and force edge rewrites everywhere — the exact opposite of edit locality.
+
+The two-level scheme confines change propagation to where it is semantically required:
+
+| Change | Semantic ID | Version hash | Dependents affected |
+|---|---|---|---|
+| Rename (alias) | unchanged | unchanged | none |
+| Behavior fix, same contract | unchanged | new | none (unpinned) / opt-in (pinned) |
+| Signature change | **new** | new | all — correctly, this is a breaking change |
 
 **Properties this gives us:**
 
 | Property | Consequence |
 |---|---|
-| Two nodes with identical semantics share an ID | True deduplication at semantic level — DRY enforced structurally |
-| Renaming a node does not change its ID | Rename = metadata update, zero semantic change |
-| Moving a node between contexts does not change its ID | Restructuring is metadata, not semantic change |
-| ID is deterministic | Two independent agents deriving the same computation produce the same node |
-| ID encodes dependency set | Changing a dependency changes the ID — dependency drift is structurally impossible |
+| Two nodes with identical contracts share a semantic ID | Candidate deduplication surfaces structurally; identical IR under the same ID collapses to one version |
+| Renaming a node changes nothing | Rename = metadata update, zero semantic change |
+| Moving a node between contexts changes nothing | Restructuring is metadata, not semantic change |
+| IDs are deterministic | Two independent agents deriving the same contract converge on the same node |
+| Version hash encodes dependency pins | Dependency drift is detectable per revision without cascading identity changes |
 
 ### Human Aliases
 
@@ -181,7 +214,7 @@ All dependencies are explicit `depends-on` edges. There is no implicit loading, 
 
 4. **Transitive dependency depth** — at context partition boundaries, transitive depth is constrained (at most N hops to cross a boundary). This enforces edit locality.
 
-5. **Dependency updates propagate** — when node B changes (new content hash → new ID), all nodes with `depends-on` edges to the old B ID must either update their edge or declare explicit compatibility.
+5. **Dependency updates propagate only on contract change** — when node B's behavior changes (new version hash, same semantic ID), unpinned dependents pick up the new version automatically and pinned dependents keep their pin. When B's signature changes (new semantic ID), every dependent must explicitly re-target the new ID or declare the old one retained — a breaking change is never silent.
 
 ### Dependency vs. Composition
 
